@@ -18,6 +18,12 @@
   $ mkdir output
   $ mv *gpx output
 
+Check last modified/accessed timestamps were set correctly
+
+  $ stat --printf="%X %Y\n" output/*.gpx
+  1264874599 1264874599
+  1264887099 1264887099
+
 Compare generated output with stored, correct output
   $ mkdir correct
   $ tar xzf $TESTDIR/malenki-20100130.gpx-out.tar.gz -C correct

@@ -12,9 +12,11 @@ import collections
 import copy
 import os
 import pprint
+import time
+
+import dateutil.parser
 
 from lxml import etree
-from mx.DateTime.ISO import ParseDateTimeUTC
 
 TrackTuple = collections.namedtuple(
     'TrackTuple',
@@ -53,12 +55,13 @@ def go(document):
     gpx_namespaces = ['http://www.topografix.com/GPX/1/0',
                       'http://www.topografix.com/GPX/1/1']
 
+    # TODO: What's a more Pythonic way to rewrite this? 
     t = document.getroot().tag
     for ns in gpx_namespaces:
         if ns in t:
             gpx_ns = ns
 
-    # TODO: Turn this into an exception
+    # FIXME: Turn this into an exception
     if gpx_ns is None:
         print >> sys.stderr, 'Unable to determine GPX version (neither 1.0 or 1.1)' % prog_name
         sys.exit(1)
@@ -76,8 +79,8 @@ def go(document):
         points = track_element.findall('.//{%s}trkpt' % gpx_ns)
         bbox = determineBoundingBox(points)
 
-        start_date = ParseDateTimeUTC(points[0].find('{%s}time' % gpx_ns).text)
-        end_date = ParseDateTimeUTC(points[-1].find('{%s}time' % gpx_ns).text)
+        start_date = dateutil.parser.parse(points[0].find('{%s}time' % gpx_ns).text)
+        end_date = dateutil.parser.parse(points[-1].find('{%s}time' % gpx_ns).text)
 
         track_obj = TrackTuple(
             track_etree=track_element, num_points=len(points),
@@ -88,12 +91,12 @@ def go(document):
 
     waypoints = document.findall('//{%s}wpt' % gpx_ns)
     for waypoint in waypoints:
-        time = ParseDateTimeUTC(waypoint.find('{%s}time' % gpx_ns).text)
+        wpt_time = dateutil.parser.parse(waypoint.find('{%s}time' % gpx_ns).text)
         document.getroot().remove(waypoint)
 
         # If waypoint was recording in a track's time interval, store
         for track in track_objects:
-            if track.start_date <= time and time <= track.end_date:
+            if track.start_date <= wpt_time and wpt_time <= track.end_date:
                 track.waypoints.append(waypoint)
                 continue
             #print 'Waypoint %s could not be placed' % waypoint.find('{%s}name' % gpx_ns).text
@@ -130,10 +133,16 @@ def go(document):
         document.getroot().append(t.track_etree)
         document.getroot().extend(t.waypoints)
 
-        print 'Track from %s to %s\n\twith %d track points\n\tand %d waypoints\n\twritten to %s' % (t.start_date, t.end_date, t.num_points, len(t.waypoints), filename)
+        print 'Track from %s to %s\n\twith %d track points\n\tand %d waypoints\n\twritten to %s' \
+          % (t.start_date, t.end_date, t.num_points, len(t.waypoints), filename)
+
+        # Construct UNIX timestamp for output file
+        f_time = time.mktime(t.end_date.timetuple())
 
         document.write(filename, pretty_print=True)
-        os.utime(filename, (t.end_date.ticks(), t.end_date.ticks()))
+        os.utime(filename, (f_time, f_time))
+
+    return
 
 
 if __name__ == '__main__':

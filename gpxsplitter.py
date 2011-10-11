@@ -153,5 +153,13 @@ if __name__ == '__main__':
         print >> sys.stderr, 'Usage: %s filename.gpx' % prog_name
         sys.exit(1)
 
-    document = etree.parse(sys.argv[1])
+    if os.path.isfile(sys.argv[1]):
+        document = etree.parse(sys.argv[1])
+    elif os.path.isfile(sys.argv[1] + '.gpx'):
+        document = etree.parse(sys.argv[1] + '.gpx')
+    else:
+        prog_name = os.path.basename(sys.argv[0])
+        print >> sys.stderr, 'Usage: %s filename.gpx' % prog_name
+        sys.exit(1)
+
     go(document)

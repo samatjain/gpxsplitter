@@ -155,7 +155,7 @@ if __name__ == '__main__':
             try:
                 file_name = sys.argv[1] + ext
                 document = etree.parse(file_name)
-		break
+                break
             except IOError:
                 print 'Input file not found: %s' % file_name
 

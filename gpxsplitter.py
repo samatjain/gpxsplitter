@@ -148,18 +148,19 @@ def go(document):
 if __name__ == '__main__':
     import sys
 
-    if len(sys.argv) < 2:
-        prog_name = os.path.basename(sys.argv[0])
+    prog_name = os.path.basename(sys.argv[0])
+
+    if len(sys.argv) == 2:
+        for ext in ['', '.gpx', '.GPX']:
+            try:
+                file_name = sys.argv[1] + ext
+                document = etree.parse(file_name)
+		break
+            except IOError:
+                print 'Input file not found: %s' % file_name
+
+    try:
+        go(document)
+    except NameError:
         print >> sys.stderr, 'Usage: %s filename.gpx' % prog_name
         sys.exit(1)
-
-    if os.path.isfile(sys.argv[1]):
-        document = etree.parse(sys.argv[1])
-    elif os.path.isfile(sys.argv[1] + '.gpx'):
-        document = etree.parse(sys.argv[1] + '.gpx')
-    else:
-        prog_name = os.path.basename(sys.argv[0])
-        print >> sys.stderr, 'Usage: %s filename.gpx' % prog_name
-        sys.exit(1)
-
-    go(document)

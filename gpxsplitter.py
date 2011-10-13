@@ -150,7 +150,7 @@ if __name__ == '__main__':
 
     prog_name = os.path.basename(sys.argv[0])
 
-    if len(sys.argv) == 2:
+    try:
         for ext in ['', '.gpx', '.GPX']:
             try:
                 file_name = sys.argv[1] + ext
@@ -159,8 +159,8 @@ if __name__ == '__main__':
             except IOError:
                 print 'Input file not found: %s' % file_name
 
-    try:
         go(document)
-    except NameError:
+
+    except (NameError, IndexError):
         print >> sys.stderr, 'Usage: %s filename.gpx' % prog_name
         sys.exit(1)

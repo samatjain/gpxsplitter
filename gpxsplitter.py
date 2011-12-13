@@ -157,7 +157,7 @@ if __name__ == '__main__':
                 document = etree.parse(file_name)
                 break
             except IOError:
-                print 'Input file not found: %s' % file_name
+                print >> sys.stderr, 'Input file not found: %s' % file_name
 
         go(document)
 

@@ -2,6 +2,13 @@
   $ [ -n "$PYTHON" ] || PYTHON="`which python`"
   $ alias gpxsplitter="$PYTHON $TESTDIR/../gpxsplitter.py"
 
+  $ gpxsplitter filename
+  Input file not found: filename
+  Input file not found: filename.gpx
+  Input file not found: filename.GPX
+  Usage: gpxsplitter.py filename.gpx
+  [1]
+
   $ cp $TESTDIR/malenki-20100130.gpx.gz $CRAMTMP
   $ cp $TESTDIR/malenki-20100130.gpx-out.tar.gz $CRAMTMP
   $ gzip -d $CRAMTMP/malenki-20100130.gpx.gz

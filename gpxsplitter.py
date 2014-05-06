@@ -1,5 +1,7 @@
-#!/usr/bin/env python
-# -*-python-*-
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+from __future__ import print_function, unicode_literals
 
 #__package__   = 'gpxsplitter'
 __version__   = '0.2'
@@ -133,8 +135,8 @@ def go(document):
         document.getroot().append(t.track_etree)
         document.getroot().extend(t.waypoints)
 
-        print 'Track from %s to %s\n\twith %d track points\n\tand %d waypoints\n\twritten to %s' \
-          % (t.start_date, t.end_date, t.num_points, len(t.waypoints), filename)
+        print('Track from %s to %s\n\twith %d track points\n\tand %d waypoints\n\twritten to %s' \
+          % (t.start_date, t.end_date, t.num_points, len(t.waypoints), filename))
 
         # Construct UNIX timestamp for output file
         f_time = time.mktime(t.end_date.timetuple())
@@ -157,10 +159,10 @@ if __name__ == '__main__':
                 document = etree.parse(file_name)
                 break
             except IOError:
-                print >> sys.stderr, 'Input file not found: %s' % file_name
+                print('Input file not found: %s' % file_name, file=sys.stderr)
 
         go(document)
 
     except (NameError, IndexError):
-        print >> sys.stderr, 'Usage: %s filename.gpx' % prog_name
+        print('Usage: %s filename.gpx' % prog_name, file=sys.stderr)
         sys.exit(1)

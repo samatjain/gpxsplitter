@@ -109,7 +109,7 @@ def go(document):
         # Make a copy of the GPX file template for
         document = copy.deepcopy(document_template)
 
-        filename = t.end_date.strftime('%Y-%m-%dT%H:%M:%SZ') + '.gpx'
+        filename = t.end_date.strftime('%Y-%m-%dT%H_%M_%SZ') + '.gpx'
 
         # Set metadata time to time of latest trackpoint
         metadata_tag = document.find('{%s}metadata' % gpx_ns)

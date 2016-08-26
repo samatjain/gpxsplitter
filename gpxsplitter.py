@@ -141,7 +141,8 @@ def go(document):
         # Construct UNIX timestamp for output file
         f_time = time.mktime(t.end_date.timetuple())
 
-        document.write(filename, pretty_print=True)
+        document.write(filename, xml_declaration=True, encoding="UTF-8",
+			pretty_print=True)
         os.utime(filename, (f_time, f_time))
 
     return

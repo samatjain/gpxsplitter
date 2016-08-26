@@ -53,18 +53,12 @@ def determineBoundingBox(points):
 
 def go(document):
     # Detect whether GPX 1.0 or 1.1 is in use
-    gpx_ns = None
+    gpx_ns = document.xpath('namespace-uri(.)')
     gpx_namespaces = ['http://www.topografix.com/GPX/1/0',
                       'http://www.topografix.com/GPX/1/1']
 
-    # TODO: What's a more Pythonic way to rewrite this? 
-    t = document.getroot().tag
-    for ns in gpx_namespaces:
-        if ns in t:
-            gpx_ns = ns
-
     # FIXME: Turn this into an exception
-    if gpx_ns is None:
+    if gpx_ns not in gpx_namespaces:
         print >> sys.stderr, 'Unable to determine GPX version (neither 1.0 or 1.1)' % prog_name
         sys.exit(1)
 
